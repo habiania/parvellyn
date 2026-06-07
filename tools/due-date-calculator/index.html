@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>출산예정일 계산기 — 임신 주수·예정일 자동 계산 | Parvellyn</title>
+<meta name="description" content="마지막 생리 시작일 또는 수정일로 출산예정일과 현재 임신 주수를 계산합니다. 3분기 일정도 확인하세요.">
+<link rel="canonical" href="https://parvellyn.com/tools/due-date-calculator/">
+<meta property="og:title" content="출산예정일 계산기 | Parvellyn"><meta property="og:type" content="website"><meta property="og:url" content="https://parvellyn.com/tools/due-date-calculator/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+.calc-wrap{max-width:640px;margin:2.5rem auto;background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.1);padding:2rem}
+.calc-wrap h1{font-family:'Nanum Myeongjo', serif;font-size:1.6rem;color:#4A7C59;margin-bottom:.25rem}
+.calc-wrap .subtitle{color:#6B7A6B;font-size:.95rem;margin-bottom:1.75rem}
+.tab-group{display:flex;gap:.5rem;margin-bottom:1.25rem}
+.tab-btn{flex:1;padding:.6rem;border:2px solid #e0e0e0;border-radius:8px;background:#fff;cursor:pointer;font-size:.9rem;font-weight:600;transition:all .2s}
+.tab-btn.active{border-color:#4A7C59;background:#4A7C59;color:#fff}
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;font-weight:600;margin-bottom:.4rem;font-size:.95rem}
+.form-group input{width:100%;padding:.75rem 1rem;border:2px solid #e0e0e0;border-radius:8px;font-size:1rem;font-family:inherit;transition:border-color .2s}
+.form-group input:focus{outline:none;border-color:#4A7C59}
+.calc-btn{width:100%;background:#4A7C59;color:#fff;border:none;padding:.9rem;border-radius:8px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:background .2s}
+.calc-btn:hover{background:#3a6347}
+.result-box{margin-top:1.75rem;background:#F7F5F0;border-radius:12px;padding:1.5rem;display:none}
+.result-box.show{display:block}
+.result-main{text-align:center;margin-bottom:1.5rem;background:#fff;border-radius:10px;padding:1.25rem}
+.due-date{font-size:1.8rem;font-weight:800;color:#4A7C59}
+.due-label{font-size:.85rem;color:#6B7A6B;margin-top:.2rem}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.info-item{background:#fff;border-radius:8px;padding:1rem;text-align:center}
+.info-item strong{display:block;font-size:1.3rem;color:#4A7C59}
+.info-item span{font-size:.8rem;color:#6B7A6B}
+.trimester-box{background:#fff;border-radius:8px;padding:1.25rem}
+.trimester-box h3{font-size:1rem;margin-bottom:.75rem;color:#4A7C59}
+.trimester-item{padding:.5rem 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;font-size:.9rem}
+.trimester-item:last-child{border-bottom:none}
+.trimester-item .tri-name{font-weight:600}
+.trimester-item .tri-date{color:#6B7A6B}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container"><div class="header-inner"><a href="/" class="site-logo">🍀 Parvellyn</a><nav class="site-nav" id="siteNav"><ul><li><a href="/blog/">블로그</a></li><li><a href="/tools/" class="active">계산기</a></li><li><a href="/about/">소개</a></li><li><a href="/contact/">문의</a></li></ul></nav><button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">☰</button></div></div></header>
+<main>
+<div class="container">
+<nav class="breadcrumb"><ol><li><a href="/">홈</a></li><li><a href="/tools/">계산기</a></li><li>출산예정일 계산기</li></ol></nav>
+<div class="ad-slot ad-slot-banner">광고 영역</div>
+<div class="calc-wrap">
+<h1>🤰 출산예정일 계산기</h1>
+<p class="subtitle">마지막 생리일 또는 수정일을 기준으로 출산예정일을 계산합니다</p>
+<div class="tab-group">
+<button class="tab-btn active" onclick="setTab('lmp',this)">마지막 생리 시작일</button>
+<button class="tab-btn" onclick="setTab('conception',this)">수정일 기준</button>
+</div>
+<div class="form-group">
+<label id="dateLabel" for="inputDate">마지막 생리 시작일</label>
+<input type="date" id="inputDate" max="">
+</div>
+<button class="calc-btn" onclick="calculate()">출산예정일 계산하기</button>
+<div class="result-box" id="resultBox">
+<div class="result-main">
+<div class="due-date" id="dueDate"></div>
+<div class="due-label">출산예정일</div>
+</div>
+<div class="info-grid">
+<div class="info-item"><strong id="currentWeek">0주</strong><span>현재 임신 주수</span></div>
+<div class="info-item"><strong id="daysLeft">0일</strong><span>출산까지 남은 날</span></div>
+<div class="info-item"><strong id="currentTrimester">1분기</strong><span>현재 임신 분기</span></div>
+<div class="info-item"><strong id="conception">—</strong><span>추정 수정일</span></div>
+</div>
+<div class="trimester-box">
+<h3>임신 분기별 일정</h3>
+<div class="trimester-item"><span class="tri-name">1분기 (1~12주)</span><span class="tri-date" id="tri1"></span></div>
+<div class="trimester-item"><span class="tri-name">2분기 (13~27주)</span><span class="tri-date" id="tri2"></span></div>
+<div class="trimester-item"><span class="tri-name">3분기 (28~40주)</span><span class="tri-date" id="tri3"></span></div>
+</div>
+</div>
+</div>
+<div class="ad-slot ad-slot-banner">광고 영역</div>
+</div>
+
+<div class="related-links" style="margin-top:2rem;padding:1.25rem;background:#F7F5F0;border-radius:12px;">
+  <h3 style="font-size:1rem;margin-bottom:.75rem;color:#4A7C59;">📖 관련 육아 정보</h3>
+  <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.4rem;">
+    <li><a href="/blog/newborn-room-temperature/">신생아 적정 실내 온도와 습도</a></li>
+<li><a href="/blog/night-feeding/">밤중 수유 완전 가이드</a></li>
+<li><a href="/blog/baby-massage/">아기 마사지 방법과 효과</a></li>
+  </ul>
+</div>
+</main>
+<footer class="site-footer"><div class="container"><div class="footer-inner"><div class="footer-brand"><a href="/" class="site-logo">🍀 Parvellyn</a><p>부모와 아이 모두를 위한 육아 정보 플랫폼</p></div><nav class="footer-nav"><ul><li><a href="/about/">소개</a></li><li><a href="/contact/">문의</a></li><li><a href="/privacy-policy/">개인정보처리방침</a></li><li><a href="/terms-of-service/">이용약관</a></li></ul></nav></div><p class="footer-copy">© 2025 Parvellyn. All rights reserved.</p></div></footer>
+<script src="/js/main.js"></script>
+<script>
+let mode = 'lmp';
+document.getElementById('inputDate').max = new Date().toISOString().split('T')[0];
+function setTab(m, el) {
+  mode = m;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('dateLabel').textContent = m==='lmp'?'마지막 생리 시작일':'수정일';
+}
+function fmtDate(d) {
+  return d.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+}
+function addDays(d, n) { let r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function calculate() {
+  const val = document.getElementById('inputDate').value;
+  if (!val) { alert('날짜를 입력해주세요.'); return; }
+  const inputDate = new Date(val);
+  const today = new Date(); today.setHours(0,0,0,0);
+  // LMP 기준 280일(40주), 수정일 기준 266일(38주)
+  const daysToAdd = mode==='lmp' ? 280 : 266;
+  const lmpDate = mode==='lmp' ? inputDate : addDays(inputDate, -14);
+  const dueDate = addDays(lmpDate, 280);
+  const conceptionDate = addDays(lmpDate, 14);
+  const daysSinceLmp = Math.floor((today - lmpDate) / 86400000);
+  const currentWeek = Math.max(0, Math.floor(daysSinceLmp / 7));
+  const currentDay = daysSinceLmp % 7;
+  const daysLeft = Math.max(0, Math.floor((dueDate - today) / 86400000));
+  const trimester = currentWeek <= 12 ? '1분기' : currentWeek <= 27 ? '2분기' : '3분기';
+  document.getElementById('dueDate').textContent = fmtDate(dueDate);
+  document.getElementById('currentWeek').textContent = `${currentWeek}주 ${currentDay}일`;
+  document.getElementById('daysLeft').textContent = `${daysLeft}일`;
+  document.getElementById('currentTrimester').textContent = trimester;
+  document.getElementById('conception').textContent = fmtDate(conceptionDate);
+  document.getElementById('tri1').textContent = `${fmtDate(lmpDate)} ~ ${fmtDate(addDays(lmpDate,83))}`;
+  document.getElementById('tri2').textContent = `${fmtDate(addDays(lmpDate,84))} ~ ${fmtDate(addDays(lmpDate,188))}`;
+  document.getElementById('tri3').textContent = `${fmtDate(addDays(lmpDate,189))} ~ ${fmtDate(dueDate)}`;
+  document.getElementById('resultBox').classList.add('show');
+}
+</script>
+</body></html>

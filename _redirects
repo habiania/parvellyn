@@ -1,0 +1,10 @@
+# www → non-www
+https://www.parvellyn.com/* https://parvellyn.com/:splat 301
+
+# trailing slash 없는 경우 → 있는 경우
+/blog /blog/ 301
+/tools /tools/ 301
+/about /about/ 301
+/contact /contact/ 301
+/privacy-policy /privacy-policy/ 301
+/terms-of-service /terms-of-service/ 301

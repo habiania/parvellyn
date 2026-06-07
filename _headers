@@ -1,0 +1,28 @@
+# Cloudflare Pages 보안 및 SEO 헤더
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com https://www.googletagmanager.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com;
+
+# HTML 캐시 (짧게)
+/*.html
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
+# CSS/JS 캐시 (길게)
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/js/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 이미지 캐시
+/images/*
+  Cache-Control: public, max-age=2592000
+
+# ads.txt 캐시 없음 (항상 최신)
+/ads.txt
+  Cache-Control: no-cache

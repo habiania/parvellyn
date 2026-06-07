@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>아기 개월수 계산기 — 생년월일로 정확한 개월수 확인 | Parvellyn</title>
+<meta name="description" content="아기 생년월일을 입력하면 현재 개월수, 날수, 발달 단계를 즉시 계산해드립니다. 무료로 사용하세요.">
+<link rel="canonical" href="https://parvellyn.com/tools/baby-age-calculator/">
+<meta property="og:title" content="아기 개월수 계산기 | Parvellyn"><meta property="og:type" content="website"><meta property="og:url" content="https://parvellyn.com/tools/baby-age-calculator/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+.calc-wrap{max-width:640px;margin:2.5rem auto;background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.1);padding:2rem}
+.calc-wrap h1{font-family:'Nanum Myeongjo', serif;font-size:1.6rem;color:#4A7C59;margin-bottom:.25rem}
+.calc-wrap .subtitle{color:#6B7A6B;font-size:.95rem;margin-bottom:1.75rem}
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;font-weight:600;margin-bottom:.4rem;font-size:.95rem}
+.form-group input{width:100%;padding:.75rem 1rem;border:2px solid #e0e0e0;border-radius:8px;font-size:1rem;font-family:inherit;transition:border-color .2s}
+.form-group input:focus{outline:none;border-color:#4A7C59}
+.calc-btn{width:100%;background:#4A7C59;color:#fff;border:none;padding:.9rem;border-radius:8px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:background .2s}
+.calc-btn:hover{background:#3a6347}
+.result-box{margin-top:1.75rem;background:#F7F5F0;border-radius:12px;padding:1.5rem;display:none}
+.result-box.show{display:block}
+.result-main{text-align:center;margin-bottom:1.25rem}
+.result-months{font-size:3rem;font-weight:800;color:#4A7C59;line-height:1}
+.result-label{font-size:.9rem;color:#6B7A6B;margin-top:.25rem}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.result-item{background:#fff;border-radius:8px;padding:1rem;text-align:center}
+.result-item strong{display:block;font-size:1.4rem;color:#4A7C59}
+.result-item span{font-size:.8rem;color:#6B7A6B}
+.milestone-box{background:#fff;border-radius:8px;padding:1.25rem}
+.milestone-box h3{font-size:1rem;margin-bottom:.75rem;color:#4A7C59}
+.milestone-box ul{list-style:none;padding:0;margin:0}
+.milestone-box li{padding:.35rem 0;border-bottom:1px solid #f0f0f0;font-size:.9rem}
+.milestone-box li:last-child{border-bottom:none}
+.milestone-box li::before{content:"✓ ";color:#E8845A}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container"><div class="header-inner"><a href="/" class="site-logo">🍀 Parvellyn</a><nav class="site-nav" id="siteNav"><ul><li><a href="/blog/">블로그</a></li><li><a href="/tools/" class="active">계산기</a></li><li><a href="/about/">소개</a></li><li><a href="/contact/">문의</a></li></ul></nav><button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">☰</button></div></div></header>
+<main>
+<div class="container">
+<nav class="breadcrumb"><ol><li><a href="/">홈</a></li><li><a href="/tools/">계산기</a></li><li>아기 개월수 계산기</li></ol></nav>
+<div class="ad-slot ad-slot-banner">광고 영역</div>
+<div class="calc-wrap">
+<h1>👶 아기 개월수 계산기</h1>
+<p class="subtitle">생년월일을 입력하면 현재 개월수와 발달 단계를 알려드립니다</p>
+<div class="form-group">
+<label for="birthDate">아기 생년월일</label>
+<input type="date" id="birthDate" max="">
+</div>
+<button class="calc-btn" onclick="calculate()">개월수 계산하기</button>
+<div class="result-box" id="resultBox">
+<div class="result-main">
+<div class="result-months" id="resultMonths">0</div>
+<div class="result-label">개월</div>
+</div>
+<div class="result-grid">
+<div class="result-item"><strong id="resultDays">0</strong><span>총 날수</span></div>
+<div class="result-item"><strong id="resultWeeks">0</strong><span>총 주수</span></div>
+<div class="result-item"><strong id="resultYears">0</strong><span>연 (세)</span></div>
+<div class="result-item"><strong id="resultRemDays">0</strong><span>남은 일수</span></div>
+</div>
+<div class="milestone-box">
+<h3 id="milestoneTitle">이 시기 발달 포인트</h3>
+<ul id="milestoneList"></ul>
+</div>
+</div>
+</div>
+<div class="ad-slot ad-slot-banner">광고 영역</div>
+</div>
+
+<div class="related-links" style="margin-top:2rem;padding:1.25rem;background:#F7F5F0;border-radius:12px;">
+  <h3 style="font-size:1rem;margin-bottom:.75rem;color:#4A7C59;">📖 관련 육아 정보</h3>
+  <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.4rem;">
+    <li><a href="/blog/baby-growth-chart/">아기 성장 차트 보는 법</a></li>
+<li><a href="/blog/rolling-over/">아기 뒤집기 시기와 연습 방법</a></li>
+<li><a href="/blog/crawling/">아기 기기 시작 시기</a></li>
+  </ul>
+</div>
+</main>
+<footer class="site-footer"><div class="container"><div class="footer-inner"><div class="footer-brand"><a href="/" class="site-logo">🍀 Parvellyn</a><p>부모와 아이 모두를 위한 육아 정보 플랫폼</p></div><nav class="footer-nav"><ul><li><a href="/about/">소개</a></li><li><a href="/contact/">문의</a></li><li><a href="/privacy-policy/">개인정보처리방침</a></li><li><a href="/terms-of-service/">이용약관</a></li></ul></nav></div><p class="footer-copy">© 2025 Parvellyn. All rights reserved.</p></div></footer>
+<script src="/js/main.js"></script>
+<script>
+document.getElementById('birthDate').max = new Date().toISOString().split('T')[0];
+const milestones = {
+  0: ["시각 초점 거리 20~30cm","반사적 미소","큰 소리에 반응"],
+  1: ["얼굴 추적 시작","목 힘 조금씩 생김","가까운 사람 목소리 인식"],
+  2: ["사회적 미소 시작","옹알이 시작","손 쥐는 힘 발달"],
+  3: ["목을 가누기 시작","손에 잡히면 잠깐 쥠","웃음소리 냄"],
+  4: ["엎드려 머리 들기","장난감 향해 손 뻗기","큰 소리로 웃음"],
+  5: ["뒤집기 시도","거울 속 자신에 반응","이름에 반응 시작"],
+  6: ["완전한 뒤집기","혼자 앉기 시작(지지 필요)","이유식 시작 시기"],
+  7: ["지지 없이 잠깐 앉기","물건 손에서 손으로 옮기기","낯가림 시작"],
+  8: ["배밀이 또는 기기 시작","물건 집어 올리기","부모 이름에 반응"],
+  9: ["가구 잡고 서기 시도","엄마아빠 옹알이","낯선 사람 경계"],
+  10: ["붙잡고 서기","두 손가락 집기(pincer grasp)","까꿍 놀이 이해"],
+  11: ["붙잡고 걷기","첫 단어 준비 단계","물건 기능 이해 시작"],
+  12: ["첫 걸음 시도","첫 단어 1~3개","스스로 컵 마시기 시도"],
+  15: ["혼자 걷기","단어 5~10개","블록 2개 쌓기"],
+  18: ["뛰기 시작","단어 10~20개 이상","두 단어 조합 시작"],
+  24: ["계단 오르내리기(잡고)","두 단어 문장 구성","혼자 숟가락 사용"]
+};
+function getMilestone(months) {
+  const keys = Object.keys(milestones).map(Number).sort((a,b)=>a-b);
+  let best = keys[0];
+  for (const k of keys) { if (months >= k) best = k; }
+  return milestones[best];
+}
+function calculate() {
+  const birth = document.getElementById('birthDate').value;
+  if (!birth) { alert('생년월일을 입력해주세요.'); return; }
+  const birthDate = new Date(birth);
+  const today = new Date();
+  if (birthDate > today) { alert('생년월일이 오늘보다 미래일 수 없습니다.'); return; }
+  const totalDays = Math.floor((today - birthDate) / 86400000);
+  const totalWeeks = Math.floor(totalDays / 7);
+  let months = 0; let d = new Date(birthDate);
+  while (true) { let next = new Date(d); next.setMonth(next.getMonth()+1); if (next > today) break; d = next; months++; }
+  const remDays = Math.floor((today - d) / 86400000);
+  const years = Math.floor(months / 12);
+  document.getElementById('resultMonths').textContent = months;
+  document.getElementById('resultDays').textContent = totalDays.toLocaleString();
+  document.getElementById('resultWeeks').textContent = totalWeeks.toLocaleString();
+  document.getElementById('resultYears').textContent = years;
+  document.getElementById('resultRemDays').textContent = remDays;
+  const ms = getMilestone(months);
+  document.getElementById('milestoneTitle').textContent = `생후 ${months}개월 발달 포인트`;
+  const list = document.getElementById('milestoneList');
+  list.innerHTML = ms.map(m=>`<li>${m}</li>`).join('');
+  document.getElementById('resultBox').classList.add('show');
+}
+</script>
+</body></html>

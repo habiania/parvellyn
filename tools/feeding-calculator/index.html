@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수유량 계산기 — 개월수·체중별 적정 수유량 계산 | Parvellyn</title>
+<meta name="description" content="아기 개월수와 체중으로 하루 적정 수유량과 1회 수유량을 계산합니다. 모유·분유 모두 적용 가능합니다.">
+<link rel="canonical" href="https://parvellyn.com/tools/feeding-calculator/">
+<meta property="og:title" content="수유량 계산기 | Parvellyn"><meta property="og:type" content="website"><meta property="og:url" content="https://parvellyn.com/tools/feeding-calculator/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+.calc-wrap{max-width:640px;margin:2.5rem auto;background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.1);padding:2rem}
+.calc-wrap h1{font-family:'Nanum Myeongjo', serif;font-size:1.6rem;color:#4A7C59;margin-bottom:.25rem}
+.subtitle{color:#6B7A6B;font-size:.95rem;margin-bottom:1.75rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;font-weight:600;margin-bottom:.4rem;font-size:.95rem}
+.form-group input,.form-group select{width:100%;padding:.75rem 1rem;border:2px solid #e0e0e0;border-radius:8px;font-size:1rem;font-family:inherit;transition:border-color .2s;background:#fff}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#4A7C59}
+.calc-btn{width:100%;background:#4A7C59;color:#fff;border:none;padding:.9rem;border-radius:8px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:background .2s}
+.calc-btn:hover{background:#3a6347}
+.result-box{margin-top:1.75rem;background:#F7F5F0;border-radius:12px;padding:1.5rem;display:none}
+.result-box.show{display:block}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.result-item{background:#fff;border-radius:8px;padding:1.25rem;text-align:center}
+.result-item strong{display:block;font-size:1.5rem;color:#4A7C59;font-weight:800}
+.result-item span{font-size:.8rem;color:#6B7A6B}
+.note-box{background:#fff;border-radius:8px;padding:1.25rem;font-size:.88rem;line-height:1.7;color:#2C3E2D}
+.note-box h3{font-size:.95rem;margin-bottom:.5rem;color:#4A7C59}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container"><div class="header-inner"><a href="/" class="site-logo">🍀 Parvellyn</a><nav class="site-nav" id="siteNav"><ul><li><a href="/blog/">블로그</a></li><li><a href="/tools/" class="active">계산기</a></li><li><a href="/about/">소개</a></li><li><a href="/contact/">문의</a></li></ul></nav><button class="nav-toggle" id="navToggle" aria-label="메뉴 열기">☰</button></div></div></header>
+<main>
+<div class="container">
+<nav class="breadcrumb"><ol><li><a href="/">홈</a></li><li><a href="/tools/">계산기</a></li><li>수유량 계산기</li></ol></nav>
+<div class="ad-slot ad-slot-banner">광고 영역</div>
+<div class="calc-wrap">
+<h1>🍼 수유량 계산기</h1>
+<p class="subtitle">개월수와 체중으로 적정 수유량을 계산합니다 (모유·분유 공통)</p>
+<div class="form-row">
+<div class="form-group">
+<label for="months">아기 개월수</label>
+<select id="months">
+<option value="0">0개월 (신생아)</option>
+<option value="1">1개월</option>
+<option value="2">2개월</option>
+<option value="3">3개월</option>
+<option value="4">4개월</option>
+<option value="5">5개월</option>
+<option value="6">6개월</option>
+<option value="7">7개월</option>
+<option value="8">8개월</option>
+<option value="9">9개월</option>
+<option value="10">10개월</option>
+<option value="11">11개월</option>
+<option value="12">12개월 이상</option>
+</select>
+</div>
+<div class="form-group">
+<label for="weight">현재 체중 (kg)</label>
+<input type="number" id="weight" placeholder="예: 6.5" min="1" max="20" step="0.1">
+</div>
+</div>
+<button class="calc-btn" onclick="calculate()">수유량 계산하기</button>
+<div class="result-box" id="resultBox">
+<div class="result-grid">
+<div class="result-item"><strong id="dailyTotal">—</strong><span>하루 총 수유량 (ml)</span></div>
+<div class="result-item"><strong id="feedCount">—</strong><span>하루 수유 횟수</span></div>
+<div class="result-item"><strong id="perFeed">—</strong><span>1회 수유량 (ml)</span></div>
+<div class="result-item"><strong id="interval">—</strong><span>수유 간격</span></div>
+</div>
+<div class="note-box">
+<h3>참고사항</h3>
+<p id="noteText"></p>
+</div>
+</div>
+</div>
+<div class="ad-slot ad-slot-banner">광고 영역</div>
+</div>
+
+<div class="related-links" style="margin-top:2rem;padding:1.25rem;background:#F7F5F0;border-radius:12px;">
+  <h3 style="font-size:1rem;margin-bottom:.75rem;color:#4A7C59;">📖 관련 육아 정보</h3>
+  <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.4rem;">
+    <li><a href="/blog/breast-vs-formula/">모유 vs 분유 비교</a></li>
+<li><a href="/blog/breast-milk-storage/">모유 보관 방법</a></li>
+<li><a href="/blog/formula-storage/">분유 보관과 선택 가이드</a></li>
+  </ul>
+</div>
+</main>
+<footer class="site-footer"><div class="container"><div class="footer-inner"><div class="footer-brand"><a href="/" class="site-logo">🍀 Parvellyn</a><p>부모와 아이 모두를 위한 육아 정보 플랫폼</p></div><nav class="footer-nav"><ul><li><a href="/about/">소개</a></li><li><a href="/contact/">문의</a></li><li><a href="/privacy-policy/">개인정보처리방침</a></li><li><a href="/terms-of-service/">이용약관</a></li></ul></nav></div><p class="footer-copy">© 2025 Parvellyn. All rights reserved.</p></div></footer>
+<script src="/js/main.js"></script>
+<script>
+const feedData = [
+  {months:0,  ratio:150, count:8,  interval:'2~3시간', note:'신생아는 위가 작아 소량씩 자주 먹습니다. 모유수유는 수요에 따라 빈번하게 진행합니다.'},
+  {months:1,  ratio:150, count:8,  interval:'2~3시간', note:'이 시기에도 밤중 수유가 필요합니다. 체중 증가가 잘 되고 있는지 확인하세요.'},
+  {months:2,  ratio:150, count:6,  interval:'3시간',  note:'점차 수유 패턴이 규칙적이 됩니다. 1회 수유량이 늘어납니다.'},
+  {months:3,  ratio:150, count:6,  interval:'3~4시간', note:'밤잠이 길어지기 시작할 수 있습니다. 하루 수유량을 유지하세요.'},
+  {months:4,  ratio:130, count:5,  interval:'4시간',  note:'이유식 시작 준비 시기. 수유량이 조금씩 줄어도 정상입니다.'},
+  {months:5,  ratio:130, count:5,  interval:'4시간',  note:'이유식 시작 후에는 수유량이 자연스럽게 줄어듭니다.'},
+  {months:6,  ratio:120, count:4,  interval:'4~5시간', note:'이유식 초기 시작 시기. 이유식 후 수유를 이어서 합니다.'},
+  {months:7,  ratio:110, count:4,  interval:'4~5시간', note:'이유식 비중이 높아지며 수유량이 줄어듭니다.'},
+  {months:8,  ratio:100, count:3,  interval:'5시간',  note:'이유식 하루 2회 시기. 수유는 보완식으로 진행합니다.'},
+  {months:9,  ratio:100, count:3,  interval:'5시간',  note:'이 시기부터 이유식이 주 영양원이 됩니다.'},
+  {months:10, ratio:90,  count:3,  interval:'5~6시간', note:'이유식 후기. 다양한 식재료로 영양을 보충합니다.'},
+  {months:11, ratio:90,  count:3,  interval:'5~6시간', note:'돌 전에는 모유 또는 분유를 계속 유지합니다.'},
+  {months:12, ratio:null,count:2,  interval:'아침/저녁', note:'돌 이후는 생우유(하루 400~500ml)로 전환 가능합니다. 이유식이 주 식사가 됩니다.'},
+];
+function calculate() {
+  const months = parseInt(document.getElementById('months').value);
+  const weight = parseFloat(document.getElementById('weight').value);
+  if (!weight || weight <= 0) { alert('체중을 입력해주세요.'); return; }
+  const data = feedData[Math.min(months, feedData.length-1)];
+  let daily, perFeed;
+  if (data.ratio) {
+    daily = Math.round(weight * data.ratio);
+    daily = Math.min(daily, 1000); // 최대 1000ml
+    perFeed = Math.round(daily / data.count / 10) * 10;
+  } else {
+    daily = '400~500';
+    perFeed = '200~250';
+  }
+  document.getElementById('dailyTotal').textContent = typeof daily === 'number' ? `${daily}ml` : `${daily}ml`;
+  document.getElementById('feedCount').textContent = `${data.count}회`;
+  document.getElementById('perFeed').textContent = typeof perFeed === 'number' ? `${perFeed}ml` : `${perFeed}ml`;
+  document.getElementById('interval').textContent = data.interval;
+  document.getElementById('noteText').textContent = data.note + ' 이 계산값은 참고용이며, 아기의 상태에 따라 달라질 수 있습니다. 성장 부진이 걱정되면 소아과 상담을 권장합니다.';
+  document.getElementById('resultBox').classList.add('show');
+}
+</script>
+</body></html>

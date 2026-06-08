@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /cdn-cgi/
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://parvellyn.com/sitemap.xml
